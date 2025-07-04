@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antara - Braille Content Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 600px;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 500px;
+        }
+
+        .sidebar {
+            background: #34495e;
+            width: 250px;
+            padding: 20px;
+            color: white;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: #3498db;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button.secondary {
+            background: #95a5a6;
+        }
+
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .file-tree {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .file-tree ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .file-tree li {
+            margin-bottom: 5px;
+        }
+
+        .file-tree .folder {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .file-tree .file {
+            margin-left: 20px;
+            color: #2c3e50;
+        }
+
+        .user-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .student-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .student-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .file-actions button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="header">
+                <h1>Antara</h1>
+                <p>Braille Content Management System</p>
+            </div>
+            <div class="content">
+                <div class="login-form">
+                    <h2>Login</h2>
+                    <div id="loginError" class="alert alert-error hidden"></div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button onclick="login()">Login</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application -->
+        <div id="mainApp" class="screen">
+            <div class="header">
+                <h1>Antara - Braille Content Management</h1>
+                <div class="user-info">
+                    <span>Welcome, <span id="currentUser"></span></span>
+                    <button onclick="logout()" style="float: right;">Logout</button>
+                    <button onclick="showChangePassword()" style="float: right; margin-right: 10px;">Change Password</button>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="sidebar">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="#" onclick="showScreen('dashboard')" class="nav-link">Dashboard</a></li>
+                        <li><a href="#" onclick="showScreen('students')" class="nav-link">Manage Students</a></li>
+                        <li><a href="#" onclick="showScreen('content')" class="nav-link">Content Management</a></li>
+                        <li><a href="#" onclick="showScreen('upload')" class="nav-link">Upload Content</a></li>
+                        <li><a href="#" onclick="showScreen('download')" class="nav-link">Download/Export</a></li>
+                        <li id="adminMenu" class="hidden"><a href="#" onclick="showScreen('admin')" class="nav-link">Admin Panel</a></li>
+                    </ul>
+                </div>
+
+                <div class="content">
+                    <!-- Dashboard -->
+                    <div id="dashboard" class="screen active">
+                        <h2>Dashboard</h2>
+                        <div id="dashboardContent">
+                            <div class="student-card">
+                                <h4>System Overview</h4>
+                                <p>Total Students: <span id="totalStudents">0</span></p>
+                                <p>Content Items: <span id="totalContent">0</span></p>
+                                <p>Last Activity: <span id="lastActivity">Today</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Management -->
+                    <div id="students" class="screen">
+                        <h2>Manage Students</h2>
+                        <div class="form-group">
+                            <button onclick="showAddStudent()">Add New Student</button>
+                        </div>
+                        <div id="studentsList"></div>
+                    </div>
+
+                    <!-- Content Management -->
+                    <div id="content" class="screen">
+                        <h2>Content Management</h2>
+                        <div class="form-group">
+                            <label for="selectedStudent">Select Student:</label>
+                            <select id="selectedStudent" onchange="loadStudentContent()">
+                                <option value="">Select a student...</option>
+                            </select>
+                        </div>
+                        <div id="studentContent"></div>
+                    </div>
+
+                    <!-- Upload Content -->
+                    <div id="upload" class="screen">
+                        <h2>Upload Content</h2>
+                        <div class="form-group">
+                            <label for="uploadStudent">Select Student:</label>
+                            <select id="uploadStudent">
+                                <option value="">Select a student...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="uploadPath">Directory Path:</label>
+                            <input type="text" id="uploadPath" placeholder="e.g., Mathematics/Chapter1">
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Method:</label>
+                            <input type="radio" name="uploadMethod" value="text" id="textMethod" checked>
+                            <label for="textMethod">Text Input</label>
+                            <input type="radio" name="uploadMethod" value="file" id="fileMethod">
+                            <label for="fileMethod">File Upload</label>
+                        </div>
+                        <div id="textUpload" class="form-group">
+                            <label for="contentTitle">Content Title:</label>
+                            <input type="text" id="contentTitle" placeholder="Enter content title">
+                            <label for="contentText">Content:</label>
+                            <textarea id="contentText" placeholder="Enter your content here..."></textarea>
+                        </div>
+                        <div id="fileUpload" class="form-group hidden">
+                            <label for="fileInput">Select File (.txt or .brf):</label>
+                            <input type="file" id="fileInput" accept=".txt,.brf">
+                        </div>
+                        <button onclick="uploadContent()">Upload Content</button>
+                    </div>
+
+                    <!-- Download/Export -->
+                    <div id="download" class="screen">
+                        <h2>Download/Export</h2>
+                        <div class="form-group">
+                            <label for="downloadStudent">Select Student:</label>
+                            <select id="downloadStudent">
+                                <option value="">Select a student...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button onclick="generateDownload()">Generate Download Package</button>
+                            <button onclick="exportToAPI()">Export to Remote Device</button>
+                        </div>
+                        <div id="downloadResult"></div>
+                    </div>
+
+                    <!-- Admin Panel -->
+                    <div id="admin" class="screen">
+                        <h2>Admin Panel</h2>
+                        <div class="form-group">
+                            <h3>Create New User</h3>
+                            <label for="newUsername">Username:</label>
+                            <input type="text" id="newUsername">
+                            <label for="newPassword">Password:</label>
+                            <input type="password" id="newPassword">
+                            <label for="newRole">Role:</label>
+                            <select id="newRole">
+                                <option value="teacher">Teacher</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <button onclick="createUser()">Create User</button>
+                        </div>
+                        <div id="usersList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeChangePassword()">&times;</span>
+            <h2>Change Password</h2>
+            <div id="changePasswordError" class="alert alert-error hidden"></div>
+            <div class="form-group">
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" id="currentPassword">
+            </div>
+            <div class="form-group">
+                <label for="newPasswordField">New Password:</label>
+                <input type="password" id="newPasswordField">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password:</label>
+                <input type="password" id="confirmPassword">
+            </div>
+            <button onclick="changePassword()">Change Password</button>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddStudent()">&times;</span>
+            <h2>Add New Student</h2>
+            <div class="form-group">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName">
+            </div>
+            <div class="form-group">
+                <label for="studentId">Student ID:</label>
+                <input type="text" id="studentId">
+            </div>
+            <button onclick="addStudent()">Add Student</button>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let users = {
+            'admin': { password: '123', role: 'admin' },
+            'teacher': { password: 'braille123', role: 'teacher' }
+        };
+        let students = [
+            { name: 'Alice Johnson', id: 'STU001' },
+            { name: 'Bob Smith', id: 'STU002' },
+            { name: 'Carol Williams', id: 'STU003' }
+        ];
+        let contentData = {
+            'STU001': {
+                'Mathematics': {
+                    type: 'folder',
+                    children: {
+                        'Chapter1': {
+                            type: 'folder',
+                            children: {
+                                'Basic_Arithmetic.brf': {
+                                    type: 'file',
+                                    content: 'Welcome to Basic Arithmetic in Braille\n\nAddition Problems:\n1 + 1 = 2\n2 + 3 = 5\n5 + 4 = 9\n\nSubtraction Problems:\n10 - 3 = 7\n15 - 8 = 7\n20 - 12 = 8\n\nPractice these problems and check your answers.',
+                                    created: '2025-01-15T10:30:00Z'
+                                },
+                                'Number_Recognition.txt': {
+                                    type: 'file',
+                                    content: 'Number Recognition Exercise\n\nIdentify the following numbers:\n• One\n• Two\n• Three\n• Four\n• Five\n\nWrite the numbers in Braille notation:\n1, 2, 3, 4, 5\n\nRemember: Each number has a specific Braille pattern.',
+                                    created: '2025-01-15T11:00:00Z'
+                                }
+                            }
+                        },
+                        'Chapter2': {
+                            type: 'folder',
+                            children: {
+                                'Multiplication_Tables.brf': {
+                                    type: 'file',
+                                    content: 'Multiplication Tables\n\nTable of 2:\n2 × 1 = 2\n2 × 2 = 4\n2 × 3 = 6\n2 × 4 = 8\n2 × 5 = 10\n\nTable of 3:\n3 × 1 = 3\n3 × 2 = 6\n3 × 3 = 9\n3 × 4 = 12\n3 × 5 = 15\n\nPractice these tables daily.',
+                                    created: '2025-01-16T09:15:00Z'
+                                }
+                            }
+                        }
+                    }
+                },
+                'English': {
+                    type: 'folder',
+                    children: {
+                        'Reading': {
+                            type: 'folder',
+                            children: {
+                                'Short_Stories.txt': {
+                                    type: 'file',
+                                    content: 'The Little Bird\n\nOnce upon a time, there was a little bird who lived in a beautiful tree. The bird loved to sing every morning when the sun rose.\n\nOne day, the bird decided to explore the world beyond the tree. It flew over fields, rivers, and mountains.\n\nThe bird met many friends along the way and learned that the world was full of wonderful surprises.\n\nThe End.',
+                                    created: '2025-01-14T14:20:00Z'
+                                },
+                                'Vocabulary_List.brf': {
+                                    type: 'file',
+                                    content: 'Weekly Vocabulary - Week 1\n\n1. Adventure - an exciting experience\n2. Explore - to investigate or travel\n3. Courage - bravery in facing difficulties\n4. Wonder - a feeling of surprise and admiration\n5. Journey - a trip from one place to another\n\nUse each word in a sentence:\n- I went on an adventure to the park.\n- Let\'s explore the library.\n- She showed courage during the storm.\n- The sunset filled me with wonder.\n- Our journey home was peaceful.',
+                                    created: '2025-01-15T16:45:00Z'
+                                }
+                            }
+                        },
+                        'Writing': {
+                            type: 'folder',
+                            children: {
+                                'Essay_Assignment.txt': {
+                                    type: 'file',
+                                    content: 'Essay Assignment: My Favorite Season\n\nInstructions:\n1. Choose your favorite season (Spring, Summer, Fall, or Winter)\n2. Write a 200-word essay explaining why it\'s your favorite\n3. Include at least three specific reasons\n4. Use descriptive language\n5. Check your spelling and grammar\n\nDue Date: Next Friday\n\nRemember to:\n- Start with an introduction\n- Have a clear thesis statement\n- End with a conclusion\n- Use transition words between paragraphs',
+                                    created: '2025-01-13T13:30:00Z'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            'STU002': {
+                'Science': {
+                    type: 'folder',
+                    children: {
+                        'Biology': {
+                            type: 'folder',
+                            children: {
+                                'Plant_Life.brf': {
+                                    type: 'file',
+                                    content: 'Introduction to Plant Life\n\nPlants are living organisms that:\n• Make their own food through photosynthesis\n• Need sunlight, water, and carbon dioxide\n• Produce oxygen as a byproduct\n• Have roots, stems, and leaves\n\nTypes of Plants:\n1. Trees - large, woody plants\n2. Shrubs - medium-sized woody plants\n3. Herbs - small, soft-stemmed plants\n4. Grasses - plants with narrow leaves\n\nActivity: Observe a plant near your home and describe its parts.',
+                                    created: '2025-01-16T10:00:00Z'
+                                },
+                                'Animal_Kingdom.txt': {
+                                    type: 'file',
+                                    content: 'The Animal Kingdom\n\nAnimals are classified into different groups:\n\nMammals:\n• Have fur or hair\n• Feed milk to their babies\n• Are warm-blooded\n• Examples: Dogs, cats, humans, whales\n\nBirds:\n• Have feathers and wings\n• Lay eggs\n• Are warm-blooded\n• Examples: Eagles, sparrows, penguins\n\nReptiles:\n• Have scales\n• Are cold-blooded\n• Most lay eggs\n• Examples: Snakes, lizards, turtles\n\nHomework: Choose one animal and write about its characteristics.',
+                                    created: '2025-01-17T11:30:00Z'
+                                }
+                            }
+                        },
+                        'Chemistry': {
+                            type: 'folder',
+                            children: {
+                                'Basic_Elements.brf': {
+                                    type: 'file',
+                                    content: 'Basic Chemical Elements\n\nElements are pure substances that cannot be broken down into simpler substances.\n\nCommon Elements:\n• Hydrogen (H) - lightest element\n• Oxygen (O) - essential for breathing\n• Carbon (C) - found in all living things\n• Nitrogen (N) - makes up most of the air\n• Iron (Fe) - used to make steel\n• Gold (Au) - precious metal\n\nThe Periodic Table organizes all known elements.\n\nLab Activity: Observe how different elements react with water.',
+                                    created: '2025-01-18T09:45:00Z'
+                                }
+                            }
+                        }
+                    }
+                },
+                'History': {
+                    type: 'folder',
+                    children: {
+                        'Ancient_Civilizations.txt': {
+                            type: 'file',
+                            content: 'Ancient Civilizations\n\nEgyptian Civilization:\n• Built the pyramids\n• Developed hieroglyphics\n• Lived along the Nile River\n• Famous pharaohs: Tutankhamun, Cleopatra\n\nGreek Civilization:\n• Created democracy\n• Built the Parthenon\n• Famous philosophers: Plato, Aristotle\n• Organized the first Olympic Games\n\nRoman Civilization:\n• Built a vast empire\n• Constructed roads and aqueducts\n• Developed Latin language\n• Famous leaders: Julius Caesar, Augustus\n\nAssignment: Research one ancient civilization and present your findings.',
+                            created: '2025-01-19T14:15:00Z'
+                        }
+                    }
+                }
+            },
+            'STU003': {
+                'Geography': {
+                    type: 'folder',
+                    children: {
+                        'World_Maps.brf': {
+                            type: 'file',
+                            content: 'Understanding World Geography\n\nContinents:\n1. Asia - largest continent\n2. Africa - second largest\n3. North America - includes USA and Canada\n4. South America - includes Brazil and Argentina\n5. Antarctica - coldest continent\n6. Europe - smallest continent\n7. Australia - also called Oceania\n\nOceans:\n• Pacific Ocean - largest ocean\n• Atlantic Ocean - second largest\n• Indian Ocean - third largest\n• Arctic Ocean - smallest ocean\n\nImportant Skills:\n• Reading maps\n• Understanding coordinates\n• Identifying countries and capitals',
+                            created: '2025-01-20T10:30:00Z'
+                        },
+                        'Weather_Patterns.txt': {
+                            type: 'file',
+                            content: 'Weather and Climate\n\nWeather vs Climate:\n• Weather - daily atmospheric conditions\n• Climate - long-term weather patterns\n\nWeather Elements:\n• Temperature - how hot or cold it is\n• Humidity - amount of moisture in air\n• Precipitation - rain, snow, sleet, hail\n• Wind - moving air\n• Pressure - weight of air\n\nClimate Zones:\n• Tropical - hot and wet\n• Desert - hot and dry\n• Temperate - moderate temperatures\n• Polar - very cold\n\nDaily Activity: Record the weather for one week.',
+                            created: '2025-01-21T15:00:00Z'
+                        }
+                    }
+                },
+                'Art': {
+                    type: 'folder',
+                    children: {
+                        'Tactile_Art.brf': {
+                            type: 'file',
+                            content: 'Tactile Art Exploration\n\nTactile art uses touch to experience and create art.\n\nMaterials for Tactile Art:\n• Clay - moldable material\n• Fabric - different textures\n• Wire - for sculptures\n• Sandpaper - rough texture\n• Foam - soft material\n• Beads - various shapes and sizes\n\nTechniques:\n• Sculpting - creating 3D forms\n• Embossing - raising patterns\n• Texture rubbing - feeling surfaces\n• Collage - combining materials\n\nProject: Create a tactile artwork using three different materials.\n\nRemember: Art is about expressing yourself through touch and creativity.',
+                            created: '2025-01-22T12:00:00Z'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Initialize the application
+        function init() {
+            loadData();
+            // If no saved data exists, use default data
+            if (Object.keys(users).length <= 2) {
+                // Keep default users but don't override saved data
+                saveData();
+            }
+            updateUI();
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedUsers = localStorage.getItem('antaraUsers');
+            const savedStudents = localStorage.getItem('antaraStudents');
+            const savedContent = localStorage.getItem('antaraContent');
+
+            if (savedUsers) {
+                const loadedUsers = JSON.parse(savedUsers);
+                // Merge with default users to ensure admin and teacher exist
+                users = { ...users, ...loadedUsers };
+            }
+            if (savedStudents) {
+                const loadedStudents = JSON.parse(savedStudents);
+                // Only use saved students if they exist, otherwise keep defaults
+                if (loadedStudents.length > 0) {
+                    students = loadedStudents;
+                }
+            }
+            if (savedContent) {
+                const loadedContent = JSON.parse(savedContent);
+                // Only use saved content if it exists, otherwise keep defaults
+                if (Object.keys(loadedContent).length > 0) {
+                    contentData = loadedContent;
+                }
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('antaraUsers', JSON.stringify(users));
+            localStorage.setItem('antaraStudents', JSON.stringify(students));
+            localStorage.setItem('antaraContent', JSON.stringify(contentData));
+        }
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (users[username] && users[username].password === password) {
+                currentUser = { username, role: users[username].role };
+                document.getElementById('currentUser').textContent = username;
+                
+                // Show/hide admin menu
+                if (currentUser.role === 'admin') {
+                    document.getElementById('adminMenu').classList.remove('hidden');
+                }
+                
+                showScreen('mainApp');
+                updateUI();
+                errorDiv.classList.add('hidden');
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('adminMenu').classList.add('hidden');
+            showScreen('loginScreen');
+        }
+
+        // Show screen function
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (screenId !== 'loginScreen' && screenId !== 'mainApp') {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            updateDashboard();
+            updateStudentsList();
+            updateStudentDropdowns();
+            updateUsersList();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            document.getElementById('totalStudents').textContent = students.length;
+            let totalContent = 0;
+            Object.values(contentData).forEach(student => {
+                totalContent += countContentItems(student);
+            });
+            document.getElementById('totalContent').textContent = totalContent;
+        }
+
+        // Count content items recursively
+        function countContentItems(obj) {
+            let count = 0;
+            Object.values(obj).forEach(item => {
+                if (typeof item === 'object' && item.type === 'file') {
+                    count++;
+                } else if (typeof item === 'object' && item.type === 'folder') {
+                    count += countContentItems(item.children);
+                }
+            });
+            return count;
+        }
+
+        // Update students list
+        function updateStudentsList() {
+            const container = document.getElementById('studentsList');
+            container.innerHTML = '';
+            
+            students.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.innerHTML = `
+                    <h4>${student.name} (ID: ${student.id})</h4>
+                    <button onclick="viewStudentContent('${student.id}')">View Content</button>
+                    <button onclick="editStudent('${student.id}')" class="secondary">Edit</button>
+                    <button onclick="deleteStudent('${student.id}')" class="danger">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Update student dropdowns
+        function updateStudentDropdowns() {
+            const dropdowns = ['selectedStudent', 'uploadStudent', 'downloadStudent'];
+            dropdowns.forEach(id => {
+                const select = document.getElementById(id);
+                select.innerHTML = '<option value="">Select a student...</option>';
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.name} (${student.id})`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Show add student modal
+        function showAddStudent() {
+            document.getElementById('addStudentModal').style.display = 'block';
+        }
+
+        // Close add student modal
+        function closeAddStudent() {
+            document.getElementById('addStudentModal').style.display = 'none';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentId').value = '';
+        }
+
+        // Add student
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const id = document.getElementById('studentId').value;
+            
+            if (name && id) {
+                if (students.find(s => s.id === id)) {
+                    alert('Student ID already exists!');
+                    return;
+                }
+                
+                students.push({ name, id });
+                contentData[id] = {};
+                saveData();
+                updateUI();
+                closeAddStudent();
+            }
+        }
+
+        // Delete student
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student and all their content?')) {
+                students = students.filter(s => s.id !== id);
+                delete contentData[id];
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Load student content
+        function loadStudentContent() {
+            const studentId = document.getElementById('selectedStudent').value;
+            const container = document.getElementById('studentContent');
+            
+            if (!studentId) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const studentData = contentData[studentId] || {};
+            container.innerHTML = `
+                <div class="file-tree">
+                    <h3>Content Structure</h3>
+                    ${renderFileTree(studentData, studentId, '')}
+                </div>
+                <button onclick="showCreateFolder('${studentId}')">Create Folder</button>
+                <button onclick="showCreateFile('${studentId}')" class="secondary">Create File</button>
+            `;
+        }
+
+        // Render file tree
+        function renderFileTree(obj, studentId, path) {
+            let html = '<ul>';
+            Object.entries(obj).forEach(([key, value]) => {
+                const currentPath = path ? `${path}/${key}` : key;
+                if (typeof value === 'object') {
+                    if (value.type === 'folder') {
+                        html += `<li class="folder">📁 ${key}`;
+                        html += renderFileTree(value.children, studentId, currentPath);
+                        html += `</li>`;
+                    } else if (value.type === 'file') {
+                        html += `<li class="file">📄 ${key}
+                            <div class="file-actions">
+                                <button onclick="viewFile('${studentId}', '${currentPath}')">View</button>
+                                <button onclick="editFile('${studentId}', '${currentPath}')" class="secondary">Edit</button>
+                                <button onclick="deleteFile('${studentId}', '${currentPath}')" class="danger">Delete</button>
+                            </div>
+                        </li>`;
+                    }
+                }
+            });
+            html += '</ul>';
+            return html;
+        }
+
+        // Upload content
+        function uploadContent() {
+            const studentId = document.getElementById('uploadStudent').value;
+            const path = document.getElementById('uploadPath').value;
+            const method = document.querySelector('input[name="uploadMethod"]:checked').value;
+            
+            if (!studentId) {
+                alert('Please select a student');
+                return;
+            }
+            
+            let content = '';
+            let filename = '';
+            
+            if (method === 'text') {
+                const title = document.getElementById('contentTitle').value;
+                const text = document.getElementById('contentText').value;
+                
+                if (!title || !text) {
+                    alert('Please provide both title and content');
+                    return;
+                }
+                
+                content = text;
+                filename = title + '.txt';
+            } else {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files.length) {
+                    alert('Please select a file');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                filename = file.name;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    content = e.target.result;
+                    saveContent(studentId, path, filename, content);
+                };
+                reader.readAsText(file);
+                return;
+            }
+            
+            saveContent(studentId, path, filename, content);
+        }
+
+        // Save content
+        function saveContent(studentId, path, filename, content) {
+            if (!contentData[studentId]) {
+                contentData[studentId] = {};
+            }
+            
+            const pathParts = path ? path.split('/').filter(p => p) : [];
+            let current = contentData[studentId];
+            
+            // Create path structure
+            pathParts.forEach(part => {
+                if (!current[part]) {
+                    current[part] = { type: 'folder', children: {} };
+                }
+                current = current[part].children;
+            });
+            
+            // Add file
+            current[filename] = {
+                type: 'file',
+                content: content,
+                created: new Date().toISOString()
+            };
+            
+            saveData();
+            updateUI();
+            
+            // Clear form
+            document.getElementById('contentTitle').value = '';
+            document.getElementById('contentText').value = '';
+            document.getElementById('fileInput').value = '';
+            
+            alert('Content uploaded successfully!');
+        }
+
+        // View file
+        function viewFile(studentId, path) {
+            const pathParts = path.split('/');
+            const filename = pathParts.pop();
+            
+            let current = contentData[studentId];
+            pathParts.forEach(part => {
+                current = current[part].children;
+            });
+            
+            const file = current[filename];
+            if (file && file.type === 'file') {
+                alert(`File: ${filename}\n\nContent:\n${file.content}`);
+            }
+        }
+
+        // Delete file
+        function deleteFile(studentId, path) {
+            if (confirm('Are you sure you want to delete this file?')) {
+                const pathParts = path.split('/');
+                const filename = pathParts.pop();
+                
+                let current = contentData[studentId];
+                pathParts.forEach(part => {
+                    current = current[part].children;
+                });
+                
+                delete current[filename];
+                saveData();
+                loadStudentContent();
+            }
+        }
+
+        // Generate download
+        function generateDownload() {
+            const studentId = document.getElementById('downloadStudent').value;
+            if (!studentId) {
+                alert('Please select a student');
+                return;
+            }
+            
+            const student = students.find(s => s.id === studentId);
+            const data = contentData[studentId];
+            
+            const downloadData = {
+                student: student,
+                content: data,
+                generated: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(downloadData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${student.name}_content.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Export to API (placeholder)
+        function exportToAPI() {
+            const studentId = document.getElementById('downloadStudent').value;
+            if (!studentId) {
+                alert('Please select a student');
+                return;
+            }
+            
+            alert('API export functionality would be implemented here with the specific API endpoint provided.');
+        }
+
+        // Show change password modal
+        function showChangePassword() {
+            document.getElementById('changePasswordModal').style.display = 'block';
+        }
+
+        // Close change password modal
+        function closeChangePassword() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPasswordField').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('changePasswordError').classList.add('hidden');
+        }
+
+        // Change password
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPasswordField').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('changePasswordError');
+            
+            if (users[currentUser.username].password !== current) {
+                errorDiv.textContent = 'Current password is incorrect';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (newPass !== confirm) {
+                errorDiv.textContent = 'New passwords do not match';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (newPass.length < 3) {
+                errorDiv.textContent = 'Password must be at least 3 characters';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            users[currentUser.username].password = newPass;
+            saveData();
+            closeChangePassword();
+            alert('Password changed successfully!');
+        }
+
+        // Create user (admin only)
+        function createUser() {
+            if (currentUser.role !== 'admin') {
+                alert('Access denied');
+                return;
+            }
+            
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!username || !password) {
+                alert('Please provide username and password');
+                return;
+            }
+            
+            if (users[username]) {
+                alert('Username already exists');
+                return;
+            }
+            
+            users[username] = { password, role };
+            saveData();
+            updateUsersList();
+            
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            
+            alert('User created successfully!');
+        }
+
+        // Update users list
+        function updateUsersList() {
+            if (currentUser && currentUser.role === 'admin') {
+                const container = document.getElementById('usersList');
+                container.innerHTML = '<h3>Existing Users</h3>';
+                
+                Object.entries
